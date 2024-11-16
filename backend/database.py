@@ -1,6 +1,7 @@
 import hashlib
-from uuid import uuid4
 
+from uuid import uuid4
+from typing import List, Dict
 from sqlalchemy import create_engine
 from backend.tables import Book, Exercises, Summary
 
@@ -31,16 +32,17 @@ class DatabaseInterface:
         query = Book.select().where(Book.book_hash == book_hash)
         result = self.conn.execute(query)
         row = result.fetchone()
-        return row["path"]
+        return row.path
     
-    def get_exercises(self, book_hash: str):
+    def get_exercises(self, book_hash: str) -> List[Dict[str, str]]:
         query = Exercises.select().where(Exercises.book_hash == book_hash)
         result = self.conn.execute(query)
-        return result.fetchall()
+        exercises = result.fetchall()
+        exercises = [{"question": row.question, "answer": row.answer} for row in exercises]
+        return exercises
     
-    def get_summary(self, book_hash: str, page):
+    def get_summary(self, book_hash: str, page: int) -> str:
         query = Summary.select().where(Summary.book_hash == book_hash and Summary.page == page)
         result = self.conn.execute(query)
-        return result.fetchall()
-
-    
+        summary = result.fetchone()
+        return summary.summary
