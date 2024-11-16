@@ -28,18 +28,18 @@ class DatabaseInterface:
         return True
     
     def get_book_path(self, book_hash: str):
-        query = Book.select().where(Book.c.book_hash == book_hash)
+        query = Book.select().where(Book.book_hash == book_hash)
         result = self.conn.execute(query)
         row = result.fetchone()
         return row["path"]
     
     def get_exercises(self, book_hash: str):
-        query = Exercises.select().where(Exercises.c.book_hash == book_hash)
+        query = Exercises.select().where(Exercises.book_hash == book_hash)
         result = self.conn.execute(query)
         return result.fetchall()
     
     def get_summary(self, book_hash: str, page):
-        query = Summary.select().where(Summary.c.book_hash == book_hash and Summary.c.page == page)
+        query = Summary.select().where(Summary.book_hash == book_hash and Summary.page == page)
         result = self.conn.execute(query)
         return result.fetchall()
 
