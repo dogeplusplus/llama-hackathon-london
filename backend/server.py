@@ -13,7 +13,7 @@ from backend.models import Summarize, Exercises, Question
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173",
+    "*",
 ]
 
 app.add_middleware(
