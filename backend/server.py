@@ -39,11 +39,12 @@ async def upload_pdf(file: UploadFile = File(...)):
     # Generate a unique ID for the file
     file_id = str(uuid4())
     file_path = os.path.join(UPLOAD_DIRECTORY, f"{file_id}.pdf")
-    book_id = hashlib.sha256(file_path.encode()).hexdigest()
     
     # Save the uploaded file to the directory
     with open(file_path, "wb") as f:
         f.write(await file.read())
+ 
+    book_id = db.add_book(book_path=file_path)
 
     return {"book_id": book_id}
 
@@ -106,6 +107,6 @@ def question(data: Question = Depends()):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run("server:app", host="localhost", port=8000, reload=True)
                 
 

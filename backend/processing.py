@@ -16,10 +16,10 @@ load_dotenv(find_dotenv())
 def extract_page_content(pdf_path: str, page: int):
     doc = pymupdf.open(pdf_path)
     images = extract_images(doc, page)
-    text = doc[page].get_text().encode("utf8")
+    text = doc[int(page)].get_text()
     doc.close()
     content = [
-        {"type": "text", "text": text.decode("utf-8")}
+        {"type": "text", "text": text}
     ]
     if len(images) > 0:
         content.append({
@@ -31,8 +31,9 @@ def extract_page_content(pdf_path: str, page: int):
 
 
 @lru_cache(maxsize=None)
-def extract_images(pdf: pymupdf.Document, page: int) -> List[Image.Image]:
-    image_list = pdf[page].get_images(full=True)
+def extract_images(pdf_path: pymupdf.Document, page: int) -> List[Image.Image]:
+    pdf = pymupdf.open(pdf_path)
+    image_list = pdf[int(page)].get_images(full=True)
     images = []
     for img in image_list:
         data = pdf.extract_image(img[0])
