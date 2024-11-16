@@ -1,5 +1,4 @@
 import os
-import hashlib
 import uvicorn
 
 from uuid import uuid4
@@ -68,8 +67,9 @@ def get_summary(data: Summarize = Depends()):
 
 @app.post("/exercises/")
 def create_exercises(data: Exercises = Depends()):
+    book_path = db.get_book_path(data.book_hash)
     exercises = model.create_exercises(
-        book_path=data.book_path,
+        book_path=book_path,
         page=data.page,
     )
     for exercise in exercises:
@@ -94,8 +94,9 @@ def get_exercises(data: Exercises = Depends()):
 
 @app.post("/question/")
 def question(data: Question = Depends()):
+    book_path = db.get_book_path(data.book_hash)
     answer = model.question(
-        book_hash=data.book_hash,
+        book_path=book_path,
         page=data.page,
         question=data.question,
         highlighted_text=data.highlighted_text,

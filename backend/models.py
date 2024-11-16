@@ -15,6 +15,6 @@ class Summarize(BaseModel):
 
 
 class Exercises(BaseModel):
+    book_hash: str
     page: int
-    book_path: str
 

@@ -1,8 +1,9 @@
 import io
-import json
 import base64
 import pymupdf
 
+from uuid import uuid4
+from ast import literal_eval
 from typing import List, Optional
 from functools import lru_cache
 from PIL import Image
@@ -75,17 +76,19 @@ class ModelInterface:
 
     def create_exercises(self, book_path: str, page: int):
         instruction = """
-        Generate exercises based on the text in this page. Create them in a json format that can be parsed easily:
-        {
-            1: {
+        Generate exercises based on the text in this page.
+        Create them in a python list format that can be parsed easily with literal_eval:
+        [
+            {
                 "question": "What is the capital of France?",
                 "answer": "Paris"
             },
-            2: {
+            {
                 "question": "What is the capital of Germany?",
                 "answer": "Berlin"
             }
-        }
+        ]
+        Please do not respond with anything but the raw json format.
         """
         content = extract_page_content(book_path, page)
         prompt = [
@@ -101,8 +104,10 @@ class ModelInterface:
             messages=prompt,
             model=self.model,
         )
-        
-        result = json.loads(chat_completion.choices[0].message.content)
+        result = literal_eval(chat_completion.choices[0].message.content)
+        for exercise in result:
+            exercise["page"] = page
+            exercise["exercise"] = str(uuid4())
         return result
 
     def question(
@@ -115,7 +120,8 @@ class ModelInterface:
         page_content = extract_page_content(book_path, page)
         if question:
             instruction= """
-            Answer the following query to the best of your ability. Use the content in the page to help you
+            Answer the following query to the best of your ability. Use the content in the page to help you.
+            Try to be concise in your answer.
             answer.
             """
             prompt = [
@@ -131,6 +137,8 @@ class ModelInterface:
             instruction= """
             Elaborate on the selected text. Provide more information on the topic.
             There is additional content in the page that you can use to elaborate on the selected text.
+            Otherwise you can fallback to external knowledge.
+            Try to be concise in your answer.
             """
             prompt = [
                 {
