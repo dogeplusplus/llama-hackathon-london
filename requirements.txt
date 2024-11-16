@@ -7,3 +7,5 @@ python-dotenv
 pillow
 pymupdf
 pydantic
+uvicorn
+python-multipart
