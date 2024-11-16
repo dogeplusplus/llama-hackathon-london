@@ -3,12 +3,26 @@ import hashlib
 import uvicorn
 
 from uuid import uuid4
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 
 from backend.database import DatabaseInterface
 from backend.processing import ModelInterface
 from backend.models import Summarize, Exercises, Question
 
+app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 UPLOAD_DIRECTORY = "uploads"
 os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
