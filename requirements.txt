@@ -1,0 +1,8 @@
+psycopg2
+groq
+requests
+fastapi
+sqlalchemy
+python-dotenv
+pillow
+pymupdf
