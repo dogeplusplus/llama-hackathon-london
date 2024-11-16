@@ -3,7 +3,7 @@ import hashlib
 import uvicorn
 
 from uuid import uuid4
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 
 from backend.database import DatabaseInterface
 from backend.processing import ModelInterface
@@ -35,7 +35,7 @@ async def upload_pdf(file: UploadFile = File(...)):
 
 
 @app.post("/summarize/")
-def summarize_text(data: Summarize):
+def summarize_text(data: Summarize = Depends()):
     book_path = db.get_book_path(data.book_hash)
     
     summary = model.create_summary(
@@ -46,13 +46,13 @@ def summarize_text(data: Summarize):
     
     
 @app.get("/summary/")
-def get_summary(data: Summarize):
+def get_summary(data: Summarize = Depends()):
     summary = db.get_summary(data.book_hash, data.page)
     return {"summary": summary}
 
 
 @app.post("/exercises/")
-def create_exercises(data: Exercises):
+def create_exercises(data: Exercises = Depends()):
     exercises = model.create_exercises(
         book_path=data.book_path,
         page=data.page,
@@ -72,13 +72,13 @@ def create_exercises(data: Exercises):
 
 
 @app.get("/revision/")
-def get_exercises(data: Exercises):
+def get_exercises(data: Exercises = Depends()):
     exercises = db.get_exercises(data.book_hash)
     return {"exercises": exercises}
 
 
 @app.post("/question/")
-def question(data: Question):
+def question(data: Question = Depends()):
     answer = model.question(
         book_hash=data.book_hash,
         page=data.page,
