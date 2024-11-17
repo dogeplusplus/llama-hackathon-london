@@ -19,12 +19,13 @@ class DatabaseInterface:
         self.conn.commit()
         return book_hash
     
-    def add_exercise(self, book_hash: str, page: int, question: str, answer: str):
+    def add_exercise(self, book_hash: str, page: int, question: str, answer: str, exercise_id: str):
         stmt = insert(Exercises).values(
             book_hash=book_hash,
             page=page,
             question=question,
             answer=answer,
+            exercise_id=exercise_id,
         )
         self.conn.execute(stmt)
         self.conn.commit()

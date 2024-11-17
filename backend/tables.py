@@ -20,6 +20,7 @@ class Summary(Base):
 class Exercises(Base):
     __tablename__ = "exercises"
     book_hash = Column(String, primary_key=True)
+    exercise_id = Column(String, primary_key=True)
     page = Column(Integer)
     question = Column(String)
     answer = Column(String)

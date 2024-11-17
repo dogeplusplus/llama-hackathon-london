@@ -75,8 +75,8 @@ def create_exercises(data: Exercises = Depends()):
     for exercise in exercises:
         db.add_exercise(
             book_hash=data.book_hash,
-            exercise=exercise["exercise"],
             page=exercise["page"],
+            exercise_id=str(uuid4()),
             question=exercise["question"],
             answer=exercise["answer"],
         )
