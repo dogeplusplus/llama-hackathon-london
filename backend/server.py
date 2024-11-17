@@ -3,7 +3,7 @@ import uvicorn
 
 from uuid import uuid4
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
+from fastapi import FastAPI, UploadFile, File, Depends
 from fastapi.responses import JSONResponse
 from backend.database import DatabaseInterface
 from backend.processing import ModelInterface
@@ -11,21 +11,17 @@ from backend.models import Summarize, Exercises, Question
 
 app = FastAPI()
 
-# origins = [
-#     "*",
-#     "http://localhost:5173",
-#     "http://127.0.0.1:5173",
-#     "https://localhost:5173",
-# ]
+origins = [
+    "*",
+]
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-#     expose_headers=["*"],
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def wrap_response(data, status_code=200):
     response = JSONResponse(
@@ -56,7 +52,7 @@ async def upload_pdf(file: UploadFile = File(...)):
  
     book_id = db.add_book(book_path=file_path)
 
-    return wrap_response({"book_id": book_id})
+    return wrap_response({"book_hash": book_id})
 
 
 @app.post("/summarize/")
