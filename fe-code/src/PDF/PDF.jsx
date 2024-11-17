@@ -23,9 +23,9 @@ const PdfJs = () => {
       setUploadStatus('Uploading...');
       const response = await fetch('http://localhost:8000/upload/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data', 
-        },
+        // headers: {
+        //   'Content-Type': 'multipart/form-data',
+        // },
         body: formData,
       });
 

@@ -32,8 +32,8 @@ model = ModelInterface(os.environ.get("GROQ_API_KEY"))
 
 @app.post("/upload/")
 async def upload_pdf(file: UploadFile = File(...)):
-    if file.content_type != "application/pdf":
-        raise HTTPException(status_code=400, detail="File must be a PDF")
+    # if file.content_type != "application/pdf":
+    #     raise HTTPException(status_code=400, detail="File must be a PDF")
     
     # Generate a unique ID for the file
     file_id = str(uuid4())
